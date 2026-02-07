@@ -1,0 +1,39 @@
+{
+  "policy_name": "Cloud Operations Security Policy",
+  "version": "1.0",
+  "description": "Context-aware policy that restricts agent actions based on operational mode",
+  "modes": {
+    "NORMAL": {
+      "description": "Standard operations mode with read-only access",
+      "allowed_tools": [
+        "get_service_status",
+        "read_logs"
+      ],
+      "blocked_tools": [
+        "restart_service",
+        "scale_fleet",
+        "delete_database"
+      ],
+      "rationale": "During normal operations, agents should only monitor systems to prevent accidental changes"
+    },
+    "EMERGENCY": {
+      "description": "Emergency mode allowing corrective actions but blocking destructive operations",
+      "allowed_tools": [
+        "get_service_status",
+        "read_logs",
+        "restart_service",
+        "scale_fleet"
+      ],
+      "blocked_tools": [
+        "delete_database"
+      ],
+      "rationale": "In emergencies, agents can take corrective actions but are strictly prevented from destructive operations that could cause data loss"
+    }
+  },
+  "global_rules": {
+    "always_blocked": [
+      "delete_database"
+    ],
+    "description": "Tools that are never allowed regardless of mode"
+  }
+}
